@@ -1,0 +1,28 @@
+
+Ressources:
+	
+	-Topo sur la notion de complexite
+	
+	-Liste des algo de tri les plus efficace
+			bubble:
+			selection:
+			insertion:
+			merge:
+			quick:
+			comb:
+			heap:
+			shell:
+
+To do, steps by steps:
+
+Creer deux listes chainees ou deux tableaux qui seront les piles A et B.
+
+Stocker tout les arg dans la pile A
+	Erreur si:
+			- argc < 1
+			- Un des arg != nombre (suite de char numeric only, termine par \0);	
+			- Presence de doublons == 1
+			- nbr > MAX_INT ou nbr < INT_MIN;
+	
+	Au debut:
+	
