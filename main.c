@@ -6,6 +6,7 @@
 #define INT_MAX 2147483647
 #define INT_MIN -2147483648
 
+void		print_dlist(t_dlist *head);
 int		ft_push_swap_parsing(int ac, char **av);
 int		ft_digit_syntax(char *str);
 long	ft_atol(char *str);
@@ -38,10 +39,28 @@ int		main(int ac, char **av)
 		ft_putstr("Error _ Malloc ? \n");
 		return (1);
 	}
+	print_dlist(s_a);
 	
 	return (0);
 }
 
+void		print_dlist(t_dlist *head)
+{
+	t_dlist *tmp;
+
+	if (head == NULL)
+	{
+		ft_putstr("Empty list ... \n");
+		return;
+	}
+	tmp = head;
+	while (tmp)
+	{
+		//printf("|%d| --> ", tmp->data);
+		tmp = tmp->next;
+	}
+	printf("NULL\n");
+}
 t_dlist		*ft_create_node(void *content)
 {
 	t_dlist *new;
