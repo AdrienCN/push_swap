@@ -28,8 +28,32 @@ void		ft_s_rev_rot(t_dlist **top_stack);
 
 void		ft_s_double_swap(t_dlist **top_stack_a, t_dlist **top_stack_b);
 void		ft_s_double_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
-void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b):
+void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
 
+void		ft_s_swap(t_dlist **top_stack)
+{
+	t_dlist *first;
+	t_dlist *second;
+
+	if (*top_stack == NULL)
+	{
+		ft_putstr("Rien a swapper\n");
+		return ;
+	}
+	first = *top_stack;
+	if (first->next == NULL)
+	{
+		ft_putstr("Un seul element present dans la stack swap impossible\n");
+		return ;
+	}
+
+	second = first->next;
+	first->next = second->next;
+	first->previous = second;
+	second->next = first;
+	second->previous = NULL;
+	*top_stack = second;
+}
 
 int		main(int ac, char **av)
 {
@@ -60,6 +84,11 @@ int		main(int ac, char **av)
 
 	printf("\nStack A:\n");
 	print_dlist(s_a);
+	
+	ft_s_swap(&s_a);
+	printf("\nStack A after swap:\n");
+	print_dlist(s_a);
+
 	printf("\nStack B:\n");
 	print_dlist(s_b);
 	printf("\n");
