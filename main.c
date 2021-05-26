@@ -30,27 +30,64 @@ void		ft_s_double_swap(t_dlist **top_stack_a, t_dlist **top_stack_b);
 void		ft_s_double_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
 void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
 
-void		ft_s_swap(t_dlist **top_stack)
+t_dlist		*ft_find_last_node(t_dlist **top_stack)
 {
-	t_dlist *first;
-	t_dlist *second;
+	t_dlist *tmp;
 
 	if (*top_stack == NULL)
+	{
+		ft_putstr("Error in find_last_node\n");
+		return (NULL);
+	}
+	tmp = *top_stack;
+	while (tmp->next)
+		tmp = tmp->next;
+	return (tmp);
+}
+
+
+void		ft_s_rot(t_dlist **top_stack)
+{
+	t_dlist *new_first;
+	t_dlist *new_last;
+	t_dlist *new_second;
+
+	if (*top_stack == NULL || (*top_stack)->next == NULL)
+	{
+		ft_putstr("Nothing to rotate\n");
+		return;
+	}
+	new_first = ft_find_last_node(top_stack);
+	new_last = new_first->previous;
+	new_second = *top_stack;
+
+	printf("new_fisrt = %d|new_second = %d |last = %d\n", new_first->content, new_second->content, new_last->content);
+	new_last->next = NULL;
+
+	new_first->previous = NULL;
+	new_first->next = new_second;
+	new_second->previous = new_first;
+	*top_stack = new_first;
+}
+
+void		ft_s_swap(t_dlist **top_stack)
+{
+	t_dlist *top;
+	t_dlist *second;
+
+	if (*top_stack == NULL || (*top_stack)->next == NULL)
 	{
 		ft_putstr("Rien a swapper\n");
 		return ;
 	}
-	first = *top_stack;
-	if (first->next == NULL)
-	{
-		ft_putstr("Un seul element present dans la stack swap impossible\n");
-		return ;
-	}
+	top = *top_stack;
+	second = top->next;
 
-	second = first->next;
-	first->next = second->next;
-	first->previous = second;
-	second->next = first;
+	//Met le premier noeud en second
+	top->next = second->next;
+	top->previous = second;
+
+	second->next = top;
 	second->previous = NULL;
 	*top_stack = second;
 }
@@ -87,6 +124,10 @@ int		main(int ac, char **av)
 	
 	ft_s_swap(&s_a);
 	printf("\nStack A after swap:\n");
+	print_dlist(s_a);
+	
+	ft_s_rot(&s_a);
+	printf("\nStack A after rot:\n");
 	print_dlist(s_a);
 
 	printf("\nStack B:\n");
