@@ -7,17 +7,35 @@
 #define INT_MIN -2147483648
 
 void		print_dlist(t_dlist *head);
-int		ft_push_swap_parsing(int ac, char **av);
-int		ft_digit_syntax(char *str);
-long	ft_atol(char *str);
-int		ft_digit_syntax(char *str);
-t_dlist	*ft_make_dlist(char **av);
+
+//Parsing
+int			ft_push_swap_parsing(int ac, char **av);
+int			ft_digit_syntax(char *str);
+long		ft_atol(char *str);
+int			ft_digit_syntax(char *str);
+
+// Double linked list basics
+void		ft_push_back(t_dlist **head, t_dlist *new);
+t_dlist		*ft_create_node(int data);
+t_dlist		*ft_make_dlist(char **av);
+
+// Stack operations
+void		ft_s_push(t_dlist **stack_pulled, t_dlist **stack_pushed);
+
+void		ft_s_swap(t_dlist **top_stack);
+void		ft_s_rot(t_dlist **top_stack);
+void		ft_s_rev_rot(t_dlist **top_stack);
+
+void		ft_s_double_swap(t_dlist **top_stack_a, t_dlist **top_stack_b);
+void		ft_s_double_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
+void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b):
+
 
 int		main(int ac, char **av)
 {
 	int		err_val;
 	t_dlist *s_a;
-	//(void)t_dlist *s_b;
+	t_dlist	*s_b;
 	
 	err_val = ft_push_swap_parsing(ac, av);
 	if (err_val != 0)
@@ -33,13 +51,18 @@ int		main(int ac, char **av)
 
 	//Creer la stack A : initiale et non ordonnee 
 	s_a = ft_make_dlist(av);
-	//s_b = NULL;
+	s_b = NULL;
 	if (s_a == NULL)
 	{
 		ft_putstr("Error _ Malloc ? \n");
 		return (1);
 	}
+
+	printf("\nStack A:\n");
 	print_dlist(s_a);
+	printf("\nStack B:\n");
+	print_dlist(s_b);
+	printf("\n");
 	
 	return (0);
 }
@@ -50,74 +73,71 @@ void		print_dlist(t_dlist *head)
 
 	if (head == NULL)
 	{
-		ft_putstr("Empty list ... \n");
+		ft_putstr("|NULL|!\n");
 		return;
 	}
 	tmp = head;
+	
 	while (tmp)
 	{
-		//printf("|%d| --> ", tmp->data);
+		printf("|%d| --> ", tmp->content);
 		tmp = tmp->next;
 	}
-	printf("NULL\n");
-}
-t_dlist		*ft_create_node(void *content)
-{
-	t_dlist *new;
-
-	new = malloc(sizeof(t_dlist));
-	if (new == NULL)
-		return (NULL);
-	new->data = content;
-	new->next = NULL;
-	new->previous = NULL;
-	return (new);
-}
-
-
-int		ft_push_back(void *content, t_dlist **head)
-{
-	t_dlist	*tmp;
-	t_dlist *new;
-
-	if (head == NULL)
-		return (1);
-	if (*head == NULL)
-	{
-		*head = ft_create_node(content);
-		if (*head == NULL)
-			return (1);
-	}
-	else
-	{
-		tmp = *head;
-		while (tmp->next != NULL)
-			tmp = tmp->next;
-		new = ft_create_node(content);
-		if (new == NULL)
-			return (1);
-		tmp->next = new;
-		new->previous = tmp;
-		new->next = NULL;
-	}
-	return (0);
+	printf("|NULL|!\n");
 }
 
 t_dlist		*ft_make_dlist(char **av)
 {
 	int i;
 	t_dlist *head;
-
+	t_dlist	*new;
+	
 	head = NULL;
-	i = 0;
+	i = 1;
 	while (av[i])
 	{
-		if (ft_push_back(av[i], &head))
+		new = ft_create_node(ft_atoi(av[i]));
+		if (new == NULL)
 			return (NULL);
+		ft_push_back(&head, new);
 		i++;
 	}
 	return (head);
 }
+
+void		ft_push_back(t_dlist **head, t_dlist *new)
+{
+	t_dlist	*tmp;
+
+	if (*head == NULL)
+		*head = new;
+	else
+	{
+		tmp = *head;
+		while (tmp->next != NULL)
+			tmp = tmp->next;
+		tmp->next = new;
+		new->previous = tmp;
+		new->next = NULL;
+	}
+}
+
+t_dlist		*ft_create_node(int	data)
+{
+	t_dlist *new;
+
+	new = malloc(sizeof(t_dlist));
+	if (new == NULL)
+		return (NULL);
+	new->content = data;
+	new->next = NULL;
+	new->previous = NULL;
+
+//	printf("data = %d\n", new->content);
+
+	return (new);
+}
+
 
 int		ft_push_swap_parsing(int ac, char **av)
 {
