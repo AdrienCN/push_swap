@@ -16,10 +16,8 @@ int			ft_digit_syntax(char *str);
 
 // Double linked list basics
 void		ft_push_back(t_dlist **head, t_dlist *new);
-void		ft_push_front(t_dlist **head, t_dlist *new);
 t_dlist		*ft_create_node(int data);
 t_dlist		*ft_make_dlist(char **av);
-long long	ft_stack_size(t_dlist **top_stack);
 
 // Stack operations
 void		ft_s_push(t_dlist **stack_pulled, t_dlist **stack_pushed);
@@ -31,60 +29,6 @@ void		ft_s_rev_rot(t_dlist **top_stack);
 void		ft_s_double_swap(t_dlist **top_stack_a, t_dlist **top_stack_b);
 void		ft_s_double_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
 void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b);
-
-
-void		ft_s_double_swap(t_dlist **top_stack_a, t_dlist **top_stack_b)
-{
-	ft_s_swap(top_stack_a);
-	ft_s_swap(top_stack_b);
-}
-
-void		ft_s_double_rot(t_dlist **top_stack_a, t_dlist **top_stack_b)
-{
-	ft_s_rot(top_stack_a);
-	ft_s_rot(top_stack_b);
-}
-
-void		ft_s_double_rev_rot(t_dlist **top_stack_a, t_dlist **top_stack_b)
-{
-	ft_s_rev_rot(top_stack_a);
-	ft_s_rev_rot(top_stack_b);
-}
-
-long long	ft_stack_size(t_dlist **top_stack)
-{
-	long long	size;
-	t_dlist		*tmp;
-
-	tmp = *top_stack;
-	size = 0;
-	while (tmp)
-	{
-		size++;
-		tmp = tmp->next;
-	}
-	return (size);
-}
-
-void	ft_s_push(t_dlist **stack_pulled, t_dlist **stack_pushed)
-{
-	t_dlist *tmp;
-	if (stack_pulled == NULL || stack_pushed == NULL)
-	{
-		printf("Error, NULL pointer was given\n");
-		return ;
-	}
-	if (ft_stack_size(stack_pulled) == 0)
-		printf("Nothing to push, empty stack\n");
-
-	ft_push_front(stack_pushed, ft_create_node((*stack_pulled)->content));
-
-	tmp = *stack_pulled;
-	*stack_pulled = tmp->next;
-	if (*stack_pulled != NULL)
-		(*stack_pulled)->previous = NULL;
-	free(tmp);
-}
 
 t_dlist		*ft_find_last_node(t_dlist **top_stack)
 {
@@ -101,60 +45,28 @@ t_dlist		*ft_find_last_node(t_dlist **top_stack)
 	return (tmp);
 }
 
-void		ft_s_rev_rot(t_dlist **top_stack)
-{
-	t_dlist *new_first;
-	t_dlist *new_last;
-	t_dlist *old_last;
-	
-	if (*top_stack == NULL || (*top_stack)->next == NULL)
-	{
-		ft_putstr("Nothing to rotate\n");
-		return;
-	}
 
-	if (ft_stack_size(top_stack) == 2)
-	{
-		ft_s_swap(top_stack);
-		return;
-	}
-	
-	old_last = ft_find_last_node(top_stack);
-	new_first = (*top_stack)->next;
-	new_last = *top_stack;
-
-	new_first->previous = NULL;
-	new_last->next = NULL;
-	new_last->previous = old_last;
-	old_last->next = new_last;
-	*top_stack = new_first;
-}
-
-	
 void		ft_s_rot(t_dlist **top_stack)
 {
 	t_dlist *new_first;
 	t_dlist *new_last;
+	t_dlist *new_second;
 
 	if (*top_stack == NULL || (*top_stack)->next == NULL)
 	{
 		ft_putstr("Nothing to rotate\n");
 		return;
 	}
-	
-	if (ft_stack_size(top_stack) == 2)
-	{
-		ft_s_swap(top_stack);
-		return;
-	}
-	
 	new_first = ft_find_last_node(top_stack);
 	new_last = new_first->previous;
-	(*top_stack)->previous = new_first;
+	new_second = *top_stack;
+
+	printf("new_fisrt = %d|new_second = %d |last = %d\n", new_first->content, new_second->content, new_last->content);
 	new_last->next = NULL;
 
 	new_first->previous = NULL;
-	new_first->next = *top_stack;
+	new_first->next = new_second;
+	new_second->previous = new_first;
 	*top_stack = new_first;
 }
 
@@ -170,11 +82,15 @@ void		ft_s_swap(t_dlist **top_stack)
 	}
 	top = *top_stack;
 	second = top->next;
+
 	//Met le premier noeud en second
-	if (second->next)
-		(second->next)->previous = top;
 	top->next = second->next;
 	top->previous = second;
+	if (top->next == NULL)
+		printf("new_second -> next = NULL \n");
+	else
+		printf("new_second -> next = %d \n", top->next->content);
+
 	second->next = top;
 	second->previous = NULL;
 	*top_stack = second;
@@ -200,50 +116,27 @@ int		main(int ac, char **av)
 
 	//Creer la stack A : initiale et non ordonnee 
 	s_a = ft_make_dlist(av);
-	s_b = ft_make_dlist(av);
+	s_b = NULL;
 	if (s_a == NULL)
 	{
 		ft_putstr("Error _ Malloc ? \n");
 		return (1);
 	}
 
-	printf("Stack size = %lld \n", ft_stack_size(&s_a));
-
 	printf("\nStack A:\n");
 	print_dlist(s_a);
-
+	
 	ft_s_swap(&s_a);
 	printf("\nStack A after swap:\n");
 	print_dlist(s_a);
-	
-	ft_s_swap(&s_a);
-	printf("\nStack A after anothr swap:\n");
-	print_dlist(s_a);
-	
+/*	
 	ft_s_rot(&s_a);
 	printf("\nStack A after rot:\n");
 	print_dlist(s_a);
-		
-	ft_s_rev_rot(&s_a);
-	printf("\nStack A after rev_rot:\n");
-	print_dlist(s_a);
-	
+*/
 	printf("\nStack B:\n");
 	print_dlist(s_b);
 	printf("\n");
-
-	ft_s_push(&s_b, &s_a);
-
-	printf("\nStack A:\n");
-	print_dlist(s_a);
-	printf("\n");
-	
-	printf("\nStack B:\n");
-	print_dlist(s_b);
-	printf("\n");
-
-
-
 	
 	return (0);
 }
@@ -261,7 +154,7 @@ void		print_dlist(t_dlist *head)
 	
 	while (tmp)
 	{
-		printf("|%d| -->", tmp->content);
+		printf("|%d| --> ", tmp->content);
 		tmp = tmp->next;
 	}
 	printf("|NULL|!\n");
@@ -286,30 +179,10 @@ t_dlist		*ft_make_dlist(char **av)
 	return (head);
 }
 
-void		ft_push_front(t_dlist **head, t_dlist *new)
-{
-	t_dlist *tmp;
-
-	if (head == NULL)
-		return ;
-	if (*head == NULL)
-		*head = new;
-	else
-	{
-		tmp = *head;
-		new->previous = NULL;
-		new->next = tmp;
-		tmp->previous = new;
-		*head = new;
-	}
-}
-
 void		ft_push_back(t_dlist **head, t_dlist *new)
 {
 	t_dlist	*tmp;
 
-	if (head == NULL)
-		return ;
 	if (*head == NULL)
 		*head = new;
 	else
